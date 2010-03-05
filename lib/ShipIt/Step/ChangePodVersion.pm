@@ -5,7 +5,8 @@ use base 'ShipIt::Step';
 use ShipIt::Util qw(slurp write_file);
 use File::Find::Rule;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
+$VERSION = eval $VERSION;
 
 ################################################################################
 sub init {
@@ -95,7 +96,7 @@ ShipIt::Step::ChangePodVersion - Keep VERSION in your Pod in sync with $VERSION
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -137,10 +138,12 @@ B<DEFAULT> 1
 Set this config value to 0 to deactivate VERSION Changes for all your dists
 modules. Only the dist-packages' Pod VERSION will be changed then.
 
-=head1 BUGS
+=head1 WARNING
 
-The code to change all Modules' Pod VERSION is not tested yet, because it is
-hard to write tests for it. If you encounter problems, just deactivate it with
+The code to change all Modules' Pod VERSION is not automatically tested yet,
+because it is hard to write tests for it. I use it with HTTP::Exception now and
+didn't notice any problems, although automatic testing is better than having not
+experienced any problems. If you encounter problems, just deactivate it with
 ChangePodVersion.all = 0 and drop me an email.
 
 =head1 AUTHOR
