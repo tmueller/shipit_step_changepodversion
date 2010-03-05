@@ -13,6 +13,10 @@ my $builder = Module::Build->new(
     ~},
     requires       => {qw~
         ShipIt              0.53
+        File::Find::Rule    0
+
+        base                0
+        strict              0
     ~},
     add_to_cleanup      => [ 'ShipIt-Step-ChangePodVersion-*' ],
     create_makefile_pl => 'traditional',

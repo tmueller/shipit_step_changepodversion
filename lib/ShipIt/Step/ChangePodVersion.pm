@@ -3,24 +3,63 @@ package ShipIt::Step::ChangePodVersion;
 use strict;
 use base 'ShipIt::Step';
 use ShipIt::Util qw(slurp write_file);
+use File::Find::Rule;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 ################################################################################
+sub init {
+    my ($self, $conf) = @_;
+    my $all_from_config = $conf->value("ChangePodVersion.all");
+    $self->{change_pod_version_all} = defined $all_from_config ? $all_from_config : 1;
+}
+
+
+################################################################################
+# no check for dry run, because nothing gets destroyed
 sub run {
     my ($self, $state) = @_;
 
     $state->pt->current_version; #should create $self->{ver_from} for us
-    my $new_version = $state->pt->version_from_file;
+    my $new_version = $state->version;
 
-    my $file = $state->pt->{ver_from};
-    die "perl update not done", $self->{ver_from} unless ($file);
+    # change Distribution Module
+    my $dist_file = $state->pt->{ver_from};
+    die "no file for distribution found", $self->{ver_from} unless ($dist_file);
+    my $changed_file = $self->_change_pod_version(slurp($dist_file), $new_version);
+    write_file($dist_file, $changed_file);
 
-    my $changed_file = $self->_change_pod_version(slurp($file), $new_version);
-    write_file($file, $changed_file);
+    # change other modules
+    if ($self->{change_pod_version_all}) {
+        for my $module ( File::Find::Rule->name('*.pm')->in('lib') ) {
+            next if ($module eq $dist_file); # already treated
+            my $version = $self->_version_from_file($module);
+            next unless (defined $version && length $version);
+
+            my $changed_module = $self->_change_pod_version(slurp($module), $version);
+            write_file($module, $changed_module);
+        }
+    }
+
 
     return 1;
 
+}
+
+################################################################################
+# Copied from ProjectType::Perl, which operates only on $self->{ver_from}
+# Copied again from ShipIt::Step::CheckVersionsMatch
+sub _version_from_file
+{
+    my $self = shift;
+    my $file = shift;
+
+    open my $fh, '<', $file
+        or die "Failed to open $file: $!\n";
+
+    while (<$fh>) {
+        return $2 if /\$VERSION\s*=\s*([\'\"])(.+?)\1/;
+    }
 }
 
 ################################################################################
@@ -56,11 +95,11 @@ ShipIt::Step::ChangePodVersion - Keep VERSION in your Pod in sync with $VERSION
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
-Just add it to the ShipIt config maybe near the ChangeVersion-Step
+Just add it to the ShipIt config, maybe after the ChangeVersion-Step
 
     steps = FindVersion, ChangeVersion, ChangePodVersion, CheckChangeLog, ...
 
@@ -74,13 +113,35 @@ And make sure you have a VERSION or at least a NAME section in your Pod.
 
 This is a Step for ShipIt to keep your Pod VERSION in sync with your $VERSION.
 If a VERSION section is discovered in your Pod, it is tried to find and replace
-numbers or "." or "_" with your new version.
+numbers or "." or "_" within this section with your new version.
 
 You can write whatever you want before your version-number, but make sure it
 does not contain numbers or "." or "_".
 
 In case no VERSION section is found, a VERSION section is created after the
 NAME section. If no NAME section is found, we die.
+
+By default all your modules' Pod VERSION sections are updated to the files'
+$VERSION. Add ChangePodVersion.all to your shipit config and set it to 0 to
+change only the Pod of your distribution package.
+
+In case no $VERSION is found in your package, we don't die, but continue with
+other packages.
+
+=head1 CONFIG
+
+=head2 ChangePodVersion.all
+
+B<DEFAULT> 1
+
+Set this config value to 0 to deactivate VERSION Changes for all your dists
+modules. Only the dist-packages' Pod VERSION will be changed then.
+
+=head1 BUGS
+
+The code to change all Modules' Pod VERSION is not tested yet, because it is
+hard to write tests for it. If you encounter problems, just deactivate it with
+ChangePodVersion.all = 0 and drop me an email.
 
 =head1 AUTHOR
 
