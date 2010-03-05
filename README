@@ -1,0 +1,57 @@
+NAME
+
+ShipIt::Step::ChangePodVersion - Keep VERSION in your Pod in sync with $VERSION
+
+DESCRIPTION
+
+This is a Step for ShipIt to keep your Pod VERSION in sync with your $VERSION.
+If a VERSION section is discovered in your Pod, it is tried to find and replace
+numbers or "." or "_" with your new version.
+
+You can write whatever you want before your version-number, but make sure it
+does not contain numbers or "." or "_".
+
+In case no VERSION section is found, a VERSION section is created after the
+NAME section. If no NAME section is found, we die.
+
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc ShipIt::Step::ChangePodVersion
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=ShipIt-Step-ChangePodVersion
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/ShipIt-Step-ChangePodVersion
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/ShipIt-Step-ChangePodVersion
+
+    Search CPAN
+        http://search.cpan.org/dist/ShipIt-Step-ChangePodVersion/
+
+
+LICENSE AND COPYRIGHT
+
+Copyright (C) 2010 Thomas Mueller
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
