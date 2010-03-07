@@ -10,10 +10,10 @@ WriteMakefile
           'PREREQ_PM' => {
                            'strict' => '0',
                            'base' => '0',
-                           'Test::More' => 0,
+                           'Test::More' => '0.88',
                            'ShipIt' => '0.53',
-                           'File::Find::Rule' => '0',
-                           'Test::Exception' => 0
+                           'File::Find::Rule' => '0.32',
+                           'Test::Exception' => '0.29'
                          }
         )
 ;

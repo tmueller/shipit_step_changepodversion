@@ -9,7 +9,7 @@ pm_to_blib
 \.lwpcookies
 cover_db
 pod2htm.*\.tmp
-HTTP-Exception-.*
+ShipIt-Step-ChangePodVersion-.*
 \.kpf$
 \.git
 ^\.shipit$

@@ -5,7 +5,7 @@ use base 'ShipIt::Step';
 use ShipIt::Util qw(slurp write_file);
 use File::Find::Rule;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 $VERSION = eval $VERSION;
 
 ################################################################################
@@ -96,7 +96,20 @@ ShipIt::Step::ChangePodVersion - Keep VERSION in your Pod in sync with $VERSION
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
+
+=begin readme
+
+=head1 INSTALLATION
+
+To install this module, run the following commands:
+
+    perl Build.PL
+    ./Build
+    ./Build test
+    ./Build install
+
+=end readme
 
 =head1 SYNOPSIS
 
